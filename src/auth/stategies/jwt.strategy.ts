@@ -15,11 +15,18 @@ export class JwtStategy extends PassportStrategy(Strategy) {
     }
 
     async validate(payload: User) {
+        console.log("estoy en el payload" + payload);
         if (!payload) {
+            console.log("estoy en el payload" + payload);
+            throw new UnauthorizedException();
+        }
+        if(payload.role != 'admin')
+        {
+            console.log("no es admin")
             throw new UnauthorizedException();
         }
         console.log(payload);
-    
-        return { userId: payload.name, username: payload.name, email: payload.email, role: payload.role}
+
+        return { userId: payload.name, username: payload.name, email: payload.email, role: payload.role }
     }
 }

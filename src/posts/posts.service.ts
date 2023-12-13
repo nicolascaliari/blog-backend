@@ -25,40 +25,49 @@ export class PostsService {
         return createPost.save();
     }
 
-    // async searchPosts(query: string, page: number, pageSize: number) {
-    //     try {
-    //         this.posts = await this.findAll();
-    //         const filtrado = this.posts.filter((post) => {
-    //             return post.title.includes(query);
-    //         })
+    async update(id: string, updatePostDto: CreatePostsDto): Promise<Post> {
+        return this.postModel.findByIdAndUpdate(id, updatePostDto, { new: true });
+    }
 
-    //         return filtrado;
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // }
+    async delete(id: string): Promise<Post> {
+        return this.postModel.deleteOne({ _id: id }).lean();
+    }
 
 
     async searchPosts(query: string, page: number, pageSize: number): Promise<Post[]> {
         const regex = new RegExp(`${query}`, 'i');
-      
+
         const allPosts = await this.postModel.find({
-          $or: [
-            { title: { $regex: regex } },
-            { content: { $regex: regex } },
-            { author: { $in: [regex] } },
-          ],
+            $or: [
+                { title: { $regex: regex } },
+                { content: { $regex: regex } },
+                { author: { $in: [regex] } },
+            ],
         })
-        .skip((page - 1) * pageSize)
-        .limit(pageSize)
-        .lean();
-      
+            .skip((page - 1) * pageSize)
+            .limit(pageSize)
+            .lean()
+
         console.log(allPosts);
-      
+
         return allPosts;
-      }
-      
-      
+    }
+
+    async filterPosts(filters: { category?: string[]; author?: string[] }): Promise<Post[]> {
+        const query: Record<string, any> = {};
+
+        if (filters.category && filters.category.length > 0) {
+            query.category = { $in: filters.category };
+        }
+
+        if (filters.author && filters.author.length > 0) {
+            query.author = { $in: filters.author };
+        }
+
+        return this.postModel.find(query);
+    }
+
+
 
 
 
