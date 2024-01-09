@@ -6,6 +6,9 @@ export class RolesAuthGuard {
     constructor() { }
 
     async validate(payload: User) {
+        
+        console.log("estoy en el payload papu");
+
         if (!payload || payload.role !== 'admin') {
             throw new UnauthorizedException();
         }

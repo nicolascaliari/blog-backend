@@ -1,5 +1,3 @@
-// auth.module.ts
-
 import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
@@ -7,8 +5,7 @@ import { AuthService } from './auth.service';
 import { LocalStrategy } from './stategies/local.startegy';
 import { JwtStategy } from './stategies/jwt.strategy';
 import { UsersModule } from 'src/users/users.module';
-import { RolesAuthGuard } from './stategies/roles.strategy';
-import { PostsModule } from 'src/posts/posts.module';
+import { RolesAuthGuard } from './guards/roles-auth.guard';
 
 @Module({
   imports: [
@@ -22,4 +19,4 @@ import { PostsModule } from 'src/posts/posts.module';
   providers: [AuthService, LocalStrategy, JwtStategy, RolesAuthGuard],
   exports: [AuthService],
 })
-export class AuthModule {}
+export class AuthModule { }

@@ -7,8 +7,12 @@ export class RolesAuthGuard implements CanActivate {
 
   canActivate(context: ExecutionContext): boolean {
     const roles = this.reflector.get<string[]>('roles', context.getHandler());
+
+    console.log("rol: " + roles);
+
     if (!roles) {
       // Si no hay roles definidos, permitir el acceso
+      console.log("estoy aqui");
       return true;
     }
 
@@ -16,9 +20,12 @@ export class RolesAuthGuard implements CanActivate {
     const user = request.user; // Suponiendo que el usuario está adjunto al objeto de solicitud después de la autenticación
 
     if (!user || !user.role) {
+      console.log("estoy aqui 2");
       // Si no hay un usuario o el usuario no tiene un rol, denegar el acceso
       return false;
     }
+
+    console.log("estoy aqui 3");
 
     return roles.includes(user.role);
   }
@@ -35,29 +42,27 @@ export class RolesAuthGuard implements CanActivate {
 
 
 // @Injectable()
-// export class RolesStategy extends PassportStrategy(Strategy){
-//     constructor() {
-//         super({
-//             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-//             ignoreExpiration: false,
-//             secretOrKey: '$P4L4bR45Up3RS3CR3T4%'
-//         })
+// export class RolesStategy extends PassportStrategy(Strategy) {
+//   constructor() {
+//     super({
+//       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+//       ignoreExpiration: false,
+//       secretOrKey: '$P4L4bR45Up3RS3CR3T4%'
+//     })
+//   }
+
+//   async validateIsAdmin(payload: User) {
+//     console.log("estoy en el payload" + payload);
+//     if (!payload) {
+//       if (payload.role != 'admin') {
+//         console.log("no es admin")
+//         throw new UnauthorizedException();
+//       }
+//       console.log("estoy en el payload" + payload);
+//       throw new UnauthorizedException();
 //     }
+//     console.log(payload);
 
-//     async validateIsAdmin(payload: User) {
-//         console.log("estoy en el payload" + payload);
-//         if (!payload) {
-
-//             if(payload.role != 'admin')
-//             {
-//                 console.log("no es admin")
-//                 throw new UnauthorizedException();
-//             }
-//             console.log("estoy en el payload" + payload);
-//             throw new UnauthorizedException();
-//         }
-//         console.log(payload);
-
-//         return { userId: payload.name, username: payload.name, email: payload.email, role: payload.role }
-//     }
+//     return { userId: payload.name, username: payload.name, email: payload.email, role: payload.role }
+//   }
 // }

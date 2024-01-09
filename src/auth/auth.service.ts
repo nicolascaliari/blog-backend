@@ -25,11 +25,18 @@ export class AuthService {
     try {
       const user = await this.userService.findByEmail(email);
 
+      console.log("user" + user)
+
       if (!user) {
         throw new UnauthorizedException('usuario no encontrado');
       }
 
-      const checkPassword = await compare(password, user.password);
+      const checkPassword = await compare(password.trim(), user.password.trim());
+
+
+      console.log("pass" + password)
+      console.log("userpass" + user.password)
+      console.log("checkpass" + checkPassword)
 
       if (!checkPassword) {
         throw new UnauthorizedException('contraseña incorrecta');
@@ -52,12 +59,20 @@ export class AuthService {
 
     const findUser = await this.userService.findByEmail(email);
 
+    console.log(findUser)
+
     if (!findUser) {
       throw new UnauthorizedException('usuario no encontrado');
     }
 
+    console.log(findUser)
+    console.log(password)
+    console.log(findUser.password)
+
+
     const checkPassword = await compare(password, findUser.password);
 
+    console.log(checkPassword)
     if (!checkPassword) {
       throw new UnauthorizedException('contraseña incorrecta');
     }
@@ -78,12 +93,14 @@ export class AuthService {
 
   async register(user: RegisterAuthDto) {
     const { password } = user;
-
+  
     const plainTohash = await hash(password, 10);
 
-    user = { ...user, password: plainTohash };
-
-    return this.userService.create(user);
-
+    console.log(plainTohash)
+  
+    // Crea una nueva instancia de user con la contraseña hasheada
+    const newUser = { ...user, password: plainTohash };
+  
+    return this.userService.create(newUser);
   }
 }

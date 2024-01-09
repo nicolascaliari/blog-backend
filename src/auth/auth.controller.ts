@@ -10,17 +10,20 @@ import { LoginAuthDto } from './dto/login-auth.dto';
 export class AuthController {
   constructor(
     private authService: AuthService
-    ) {}
+  ) { }
 
-  @UseGuards(LocalAuthGuard)
+  //@UseGuards(LocalAuthGuard)
   @Post('auth/login')
-  login(@Body() user : LoginAuthDto) {
+  login(@Body() user: LoginAuthDto) {
+
+    console.log(user)
+
     return this.authService.login(user);
   }
 
 
   @Post('auth/register')
-  async register(@Body() user : RegisterAuthDto) {
+  async register(@Body() user: RegisterAuthDto) {
     return this.authService.register(user);
   }
 }

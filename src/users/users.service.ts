@@ -20,7 +20,7 @@ export class UsersService {
     }
 
     async findOne(id: string): Promise<User[]> {
-        return this.userModel.findById(id);
+        return this.userModel.findById(id).lean();
     }
 
     async findUser(name: string, password: string): Promise<User[]> {

@@ -14,7 +14,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
         
         console.log('local strategy validateeeeee');
         const user = await this.authService.validateUser(email, password);
-        console.log(user)
+        console.log("user" + user)
 
         if (!user) {
             throw new UnauthorizedException('usuario no encontrado',);

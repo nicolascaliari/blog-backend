@@ -3,12 +3,16 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Post } from './schemas/posts.schema';
 import { Model } from 'mongoose';
 import { CreatePostsDto } from './dto/create-posts';
+import { User } from 'src/users/schemas/user.schema';
 
 
 
 @Injectable()
 export class PostsService {
-    constructor(@InjectModel(Post.name) private postModel: Model<Post>) { }
+    constructor(
+        @InjectModel(Post.name) private postModel: Model<Post>,
+        @InjectModel(User.name) private userModel: Model<User>
+    ) { }
     private posts: Post[] = [];
 
     async findAll(): Promise<Post[]> {
@@ -18,6 +22,12 @@ export class PostsService {
 
     async findOne(id: string): Promise<Post[]> {
         return this.postModel.findById(id);
+    }
+
+
+    async findByUser(id: string) {
+        const user = this.userModel.findById(id);
+        console.log(user);
     }
 
     async create(createPostDto: CreatePostsDto): Promise<Post> {
@@ -35,22 +45,28 @@ export class PostsService {
 
 
     async searchPosts(query: string, page: number, pageSize: number): Promise<Post[]> {
-        const regex = new RegExp(`${query}`, 'i');
 
-        const allPosts = await this.postModel.find({
-            $or: [
-                { title: { $regex: regex } },
-                { content: { $regex: regex } },
-                { author: { $in: [regex] } },
-            ],
-        })
-            .skip((page - 1) * pageSize)
-            .limit(pageSize)
-            .lean()
+        try {
+            const regex = new RegExp(`${query}`, 'i');
 
-        console.log(allPosts);
+            const allPosts = await this.postModel.find({
+                $or: [
+                    { title: { $regex: regex } },
+                    { content: { $regex: regex } },
+                    { author: { $in: [regex] } },
+                ],
+            })
+                .skip((page - 1) * pageSize)
+                .limit(pageSize)
+                .lean()
 
-        return allPosts;
+            console.log(allPosts);
+
+            return allPosts;
+        } catch (err) {
+            console.error(err);
+        }
+
     }
 
     async filterPosts(filters: { category?: string[]; author?: string[] }): Promise<Post[]> {
