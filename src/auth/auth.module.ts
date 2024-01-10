@@ -5,7 +5,6 @@ import { AuthService } from './auth.service';
 import { LocalStrategy } from './stategies/local.startegy';
 import { JwtStategy } from './stategies/jwt.strategy';
 import { UsersModule } from 'src/users/users.module';
-import { RolesAuthGuard } from './guards/roles-auth.guard';
 
 @Module({
   imports: [
@@ -16,7 +15,7 @@ import { RolesAuthGuard } from './guards/roles-auth.guard';
       signOptions: { expiresIn: '1h' },
     }),
   ],
-  providers: [AuthService, LocalStrategy, JwtStategy, RolesAuthGuard],
+  providers: [AuthService, LocalStrategy, JwtStategy],
   exports: [AuthService],
 })
 export class AuthModule { }

@@ -2,6 +2,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException, Logger } from '@nestjs/common';
 import { User } from 'src/types/User';
+// import { stringify } from 'querystring';
 
 
 @Injectable()
@@ -15,17 +16,11 @@ export class JwtStategy extends PassportStrategy(Strategy) {
     }
 
     async validate(payload: User) {
-        console.log("estoy en el payload" + payload);
+        //console.log("estoy en el payload" + JSON.stringify(payload));
         if (!payload) {
-            console.log("estoy en el payload" + payload);
             throw new UnauthorizedException();
         }
-        // if(payload.role != 'admin')
-        // {
-        //     console.log("no es admin")
-        //     throw new UnauthorizedException();
-        // }
-        console.log(payload);
+        //console.log(payload);
 
         return { userId: payload.name, username: payload.name, email: payload.email, role: payload.role }
     }

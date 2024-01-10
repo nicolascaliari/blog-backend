@@ -4,10 +4,11 @@ import { HttpExceptionFilter } from '../exception/exception-filter';
 import { CreateUserDto } from './dto/create-user';
 import { UpdateUserDto } from './dto/update-user';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RolesAuthGuard } from '../auth/guards/roles-auth.guard';
 import { ApiResponse } from '@nestjs/swagger';
 import { User } from './schemas/user.schema';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { RoleGuard } from 'src/auth/role/role.guard';
+import { Roles } from 'src/auth/roles/roles.decorator';
 
 @Controller()
 @UseFilters(new HttpExceptionFilter())
@@ -19,7 +20,6 @@ export class UsersController {
     @ApiResponse({ status: 200, description: 'Retorna los usuarios', type: User })
     @ApiResponse({ status: 401, description: 'No autorizado' })
     @UseGuards(JwtAuthGuard)
-    @UseGuards(RolesAuthGuard)
     @Get('users')
     async findAll(): Promise<User[]> {
         return this.categoryService.findAll()
@@ -53,8 +53,8 @@ export class UsersController {
     @ApiBearerAuth("JWT")
     @ApiResponse({ status: 200, description: 'Elimina un usuario por id', type: User })
     @ApiResponse({ status: 401, description: 'No autorizado' })
-    @UseGuards(JwtAuthGuard)
-    @UseGuards(RolesAuthGuard)
+    @Roles('admin')
+    @UseGuards(JwtAuthGuard, RoleGuard)
     @Delete('users/:id')
     async delete(@Param('id') id: string): Promise<User> {
         return this.categoryService.remove(id);
@@ -67,8 +67,8 @@ export class UsersController {
     @ApiBearerAuth("JWT")
     @ApiResponse({ status: 200, description: 'Trae todos los usuarios', type: User })
     @ApiResponse({ status: 401, description: 'No autorizado' })
-    @UseGuards(JwtAuthGuard)
-    @UseGuards(RolesAuthGuard)
+    @Roles('admin')
+    @UseGuards(JwtAuthGuard, RoleGuard)
     @Get('admin/users')
     async findAllUsersAdmin() {
         return this.categoryService.findAllUsersAdmin();
@@ -78,8 +78,8 @@ export class UsersController {
     @ApiBearerAuth("JWT")
     @ApiResponse({ status: 200, description: 'Trae todo los posts', type: User })
     @ApiResponse({ status: 401, description: 'No autorizado' })
-    @UseGuards(JwtAuthGuard)
-    @UseGuards(RolesAuthGuard)
+    @Roles('admin')
+    @UseGuards(JwtAuthGuard, RoleGuard)
     @Get('admin/posts')
     async findAllPostsAdmin() {
         return this.categoryService.findAllPostsAdmin();
@@ -89,8 +89,8 @@ export class UsersController {
     @ApiBearerAuth("JWT")
     @ApiResponse({ status: 200, description: 'Elimina los usuarios por id', type: User })
     @ApiResponse({ status: 401, description: 'No autorizado' })
-    @UseGuards(JwtAuthGuard)
-    @UseGuards(RolesAuthGuard)
+    @Roles('admin')
+    @UseGuards(JwtAuthGuard, RoleGuard)
     @Delete('admin/users/:id')
     async deleteAdmin(@Param('id') id: string): Promise<User> {
         return this.categoryService.remove(id);

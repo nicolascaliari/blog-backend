@@ -26,8 +26,11 @@ export class PostsService {
 
 
     async findByUser(id: string) {
-        const user = this.userModel.findById(id);
-        console.log(user);
+        const user = await this.userModel.findById(id);
+
+        const nameAuthor = user.name;
+
+        return this.postModel.find({ author: nameAuthor });
     }
 
     async create(createPostDto: CreatePostsDto): Promise<Post> {
@@ -82,11 +85,4 @@ export class PostsService {
 
         return this.postModel.find(query);
     }
-
-
-
-
-
-
-
 }

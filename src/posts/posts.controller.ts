@@ -1,10 +1,11 @@
-import { Body, Controller, Get, Param, Post, UseGuards, Query, Delete, Put } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards, Query, Delete, Put, Request } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { Posts } from '../types/Posts';
 import { CreatePostsDto } from './dto/create-posts';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
-import { RolesAuthGuard } from 'src/auth/guards/roles-auth.guard';
+import { Roles } from 'src/auth/roles/roles.decorator';
+import { RoleGuard } from 'src/auth/role/role.guard';
 
 
 @Controller()
@@ -32,14 +33,13 @@ export class PostsController {
     }
 
 
-
     @ApiBearerAuth("JWT")
     @ApiResponse({ status: 200, description: 'Trae un posts'})
     @ApiResponse({ status: 401, description: 'No autorizado' })
     @UseGuards(JwtAuthGuard)
     @Get("posts/user/:id")
-    async findByUser(@Param('id') id: string): Promise<Posts[]> {
-        return await this.postService.findOne(id);
+    async findByUser(@Param('id') id: string) {
+        return await this.postService.findByUser(id);
     }
 
 
@@ -47,8 +47,13 @@ export class PostsController {
     @ApiResponse({ status: 200, description: 'Crea un posts'})
     @ApiResponse({ status: 401, description: 'No autorizado' })
     @UseGuards(JwtAuthGuard)
-    @Post()
-    async create(@Body() createPostsDto: CreatePostsDto): Promise<Posts> {
+    @Post("posts")
+    async create(@Body() createPostsDto: CreatePostsDto , @Request() req): Promise<Posts> {
+
+        const name = req.user.username;
+
+        createPostsDto.author = name;
+
         return await this.postService.create(createPostsDto);
     }
 
@@ -57,8 +62,8 @@ export class PostsController {
     @ApiBearerAuth("JWT")
     @ApiResponse({ status: 200, description: 'Actualiza un posts'})
     @ApiResponse({ status: 401, description: 'No autorizado' })
-    @UseGuards(JwtAuthGuard)
-    @UseGuards(RolesAuthGuard)
+    @Roles('admin')
+    @UseGuards(JwtAuthGuard, RoleGuard)
     @Put(':id')
     async update(
         @Param('id') id: string,
@@ -71,14 +76,12 @@ export class PostsController {
     @ApiBearerAuth("JWT")
     @ApiResponse({ status: 200, description: 'Elimina un posts'})
     @ApiResponse({ status: 401, description: 'No autorizado' })
+    @Roles('admin')
+    @UseGuards(JwtAuthGuard, RoleGuard)
     @Delete(':id')
     async delete(@Param('id') id: string): Promise<Posts> {
         return await this.postService.delete(id);
     }
-
-
-
-    
 
 
 
