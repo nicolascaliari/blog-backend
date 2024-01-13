@@ -4,8 +4,8 @@ import { Posts } from '../types/Posts';
 import { CreatePostsDto } from './dto/create-posts';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
-import { Roles } from 'src/auth/roles/roles.decorator';
-import { RoleGuard } from 'src/auth/role/role.guard';
+import { Roles } from '../auth/roles/roles.decorator';
+import { RoleGuard } from '../auth/role/role.guard';
 
 
 @Controller()

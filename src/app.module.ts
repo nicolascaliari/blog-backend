@@ -1,12 +1,27 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 import { AuthController } from './auth/auth.controller';
-import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './users/users.module';
 import { PostsModule } from './posts/posts.module';
 
 @Module({
-  imports: [AuthModule, UsersModule, PostsModule, MongooseModule.forRoot('mongodb+srv://nicolascaliari28:iselec450@cluster0.xhcenwi.mongodb.net/blog?retryWrites=true&w=majority')],
+  imports: [
+    ConfigModule.forRoot({
+      envFilePath: `.${process.env.NODE_ENV}.env`,
+      isGlobal: true,
+    }),
+    AuthModule,
+    UsersModule,
+    PostsModule,
+    MongooseModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        uri: configService.get<string>('DATABASE'),
+      }),
+    }),
+  ],
   controllers: [AuthController],
   providers: [],
 })

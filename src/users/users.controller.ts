@@ -7,8 +7,8 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ApiResponse } from '@nestjs/swagger';
 import { User } from './schemas/user.schema';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { RoleGuard } from 'src/auth/role/role.guard';
-import { Roles } from 'src/auth/roles/roles.decorator';
+import { RoleGuard } from '../auth/role/role.guard';
+import { Roles } from '../auth/roles/roles.decorator';
 
 @Controller()
 @UseFilters(new HttpExceptionFilter())

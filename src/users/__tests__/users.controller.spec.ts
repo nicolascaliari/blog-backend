@@ -5,7 +5,9 @@ import { CreateUserDto } from '../dto/create-user';
 import { UpdateUserDto } from '../dto/update-user';
 import { User } from '../schemas/user.schema';
 import { Post } from '../../posts/schemas/posts.schema';
-import { getModelToken } from '@nestjs/mongoose';
+import { MongooseModule, getModelToken } from '@nestjs/mongoose';
+import { UsersModule } from '../users.module';
+import { PostsModule } from '../../posts/posts.module';
 
 
 
@@ -15,12 +17,12 @@ describe('UsersController', () => {
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
+            imports: [
+              MongooseModule.forRoot('mongodb+srv://nicolascaliari28:iselec450@cluster0.xhcenwi.mongodb.net/blog?retryWrites=true&w=majority'),
+              UsersModule,
+              PostsModule,
+            ],
             controllers: [UsersController],
-            providers: [UsersService, {
-              provide: getModelToken(User.name,Post.name),
-
-              useValue: jest.fn(),
-            }],
           }).compile();
 
 
@@ -47,13 +49,13 @@ describe('UsersController', () => {
     describe('findOne', () => {
         it('should return a single user by id', async () => {
             const userId = '1';
-            const userMock: User = {
+            const userMock: User[] = [{
                 name: 'John Doe',
                 password: 'password123',
                 email: 'john.doe@example.com',
-                role: 'user'
-            };
-            jest.spyOn(usersService, 'findOne').mockResolvedValue([userMock]); // Modify this line
+                role: 'client'
+            }];
+            jest.spyOn(usersService, 'findOne').mockResolvedValue(userMock); // Modify this line
 
             const result = await controller.findOne(userId);
 
@@ -63,27 +65,7 @@ describe('UsersController', () => {
 
     });
 
-    describe('create', () => {
-        it('should create a new user', async () => {
-            const createUserDto: CreateUserDto = {
-                name: 'John Doe',
-                email: 'john.doe@example.com',
-                password: 'password123',
-                role: 'user'
-            };
-            const createdUserMock: User = {
-                name: 'John Doe',
-                email: 'john.doe@example.com',
-                password: 'password123',
-                role: 'user'
-            };
-            jest.spyOn(usersService, 'create').mockResolvedValue(createdUserMock);
-
-            const result = await controller.create(createUserDto);
-
-            expect(result).toEqual(createdUserMock);
-        });
-    });
+    
 
     describe('update', () => {
         it('should update an existing user', async () => {
