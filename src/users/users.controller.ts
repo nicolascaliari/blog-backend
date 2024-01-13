@@ -16,10 +16,10 @@ export class UsersController {
     constructor(private categoryService: UsersService) { }
 
 
-    // @ApiBearerAuth("JWT")
-    // @ApiResponse({ status: 200, description: 'Retorna los usuarios', type: User })
-    // @ApiResponse({ status: 401, description: 'No autorizado' })
-    // @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth("JWT")
+    @ApiResponse({ status: 200, description: 'Retorna los usuarios', type: User })
+    @ApiResponse({ status: 401, description: 'No autorizado' })
+    @UseGuards(JwtAuthGuard)
     @Get('users')
     async findAll(): Promise<User[]> {
         return this.categoryService.findAll()

@@ -9,11 +9,11 @@ async function bootstrap() {
 
 
   const options = new DocumentBuilder()
-    .setTitle('Cats example')
+    .setTitle('Blog API')
     .setDescription('The API description')
     .setVersion('1.0')
     .addBearerAuth()
-    .addTag('cats')
+    .addTag('blog')
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
