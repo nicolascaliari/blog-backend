@@ -12,7 +12,7 @@ export class AuthController {
     private authService: AuthService
   ) { }
 
-  //@UseGuards(LocalAuthGuard)
+  @UseGuards(LocalAuthGuard)
   @Post('auth/login')
   login(@Body() user: LoginAuthDto) {
 
