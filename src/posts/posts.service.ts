@@ -63,8 +63,6 @@ export class PostsService {
                 .limit(pageSize)
                 .lean()
 
-            console.log(allPosts);
-
             return allPosts;
         } catch (err) {
             console.error(err);

@@ -4,7 +4,7 @@ import { HttpExceptionFilter } from '../exception/exception-filter';
 import { CreateUserDto } from './dto/create-user';
 import { UpdateUserDto } from './dto/update-user';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { User } from './schemas/user.schema';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { RoleGuard } from '../auth/role/role.guard';
@@ -17,8 +17,9 @@ export class UsersController {
 
 
     @ApiBearerAuth("JWT")
-    @ApiResponse({ status: 200, description: 'Retorna los usuarios', type: User })
-    @ApiResponse({ status: 401, description: 'No autorizado' })
+    @ApiOperation({ summary: 'Return users' })
+    @ApiResponse({ status: 200, description: 'Return users', type: User })
+    @ApiResponse({ status: 401, description: 'Not authorized' })
     @UseGuards(JwtAuthGuard)
     @Get('users')
     async findAll(): Promise<User[]> {
@@ -27,8 +28,9 @@ export class UsersController {
 
 
     @ApiBearerAuth("JWT")
-    @ApiResponse({ status: 200, description: 'Retorna un usuario por id', type: User })
-    @ApiResponse({ status: 401, description: 'No autorizado' })
+    @ApiOperation({ summary: 'Return one user. Example: 659d621a3c3dd90518528069' })
+    @ApiResponse({ status: 200, description: 'Return one user', type: User })
+    @ApiResponse({ status: 401, description: 'Not authorized' })
     @UseGuards(JwtAuthGuard)
     @Get('user/:id')
     async findOne(@Param('id') id: string) {
@@ -37,8 +39,9 @@ export class UsersController {
 
 
     @ApiBearerAuth("JWT")
-    @ApiResponse({ status: 200, description: 'Actualiza un usuario por id', type: User })
-    @ApiResponse({ status: 401, description: 'No autorizado' })
+    @ApiOperation({ summary: 'Update user data. Example: name: john' })
+    @ApiResponse({ status: 200, description: 'Update user data', type: User })
+    @ApiResponse({ status: 401, description: 'Not authorized' })
     @UseGuards(JwtAuthGuard)
     @Put('users/:id')
     async update(
@@ -51,8 +54,9 @@ export class UsersController {
 
 
     @ApiBearerAuth("JWT")
-    @ApiResponse({ status: 200, description: 'Elimina un usuario por id', type: User })
-    @ApiResponse({ status: 401, description: 'No autorizado' })
+    @ApiOperation({ summary: 'Delete user. Example: 659d621a3c3dd90518528069' })
+    @ApiResponse({ status: 200, description: 'Delete user', type: User })
+    @ApiResponse({ status: 401, description: 'Not authorized' })
     @Roles('admin')
     @UseGuards(JwtAuthGuard, RoleGuard)
     @Delete('users/:id')
@@ -62,11 +66,13 @@ export class UsersController {
 
 
 
-    //endpoints para administradores
+
+    //endpoints for administradores
 
     @ApiBearerAuth("JWT")
-    @ApiResponse({ status: 200, description: 'Trae todos los usuarios', type: User })
-    @ApiResponse({ status: 401, description: 'No autorizado' })
+    @ApiOperation({ summary: 'Return users. Only admins' })
+    @ApiResponse({ status: 200, description: 'Return users', type: User })
+    @ApiResponse({ status: 401, description: 'Not authorized' })
     @Roles('admin')
     @UseGuards(JwtAuthGuard, RoleGuard)
     @Get('admin/users')
@@ -76,8 +82,9 @@ export class UsersController {
 
 
     @ApiBearerAuth("JWT")
-    @ApiResponse({ status: 200, description: 'Trae todo los posts', type: User })
-    @ApiResponse({ status: 401, description: 'No autorizado' })
+    @ApiOperation({ summary: 'Return posts. Only admins' })
+    @ApiResponse({ status: 200, description: 'Return posts', type: User })
+    @ApiResponse({ status: 401, description: 'Not authorized' })
     @Roles('admin')
     @UseGuards(JwtAuthGuard, RoleGuard)
     @Get('admin/posts')
@@ -87,8 +94,9 @@ export class UsersController {
 
 
     @ApiBearerAuth("JWT")
-    @ApiResponse({ status: 200, description: 'Elimina los usuarios por id', type: User })
-    @ApiResponse({ status: 401, description: 'No autorizado' })
+    @ApiOperation({ summary: 'Delete user. Only admins. Example: 659d621a3c3dd90518528069' })
+    @ApiResponse({ status: 200, description: 'Delete user', type: User })
+    @ApiResponse({ status: 401, description: 'Not authorized' })
     @Roles('admin')
     @UseGuards(JwtAuthGuard, RoleGuard)
     @Delete('admin/users/:id')

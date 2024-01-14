@@ -12,22 +12,17 @@ export class JwtStategy extends PassportStrategy(Strategy) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
-            secretOrKey: async(_,done) => {
+            secretOrKey: async (_, done) => {
                 const secret = this.configService.get<string>('JWT_SECRET');
-                done(null,secret);
+                done(null, secret);
             }
         });
     }
 
     async validate(payload: User) {
-
-        console.log("estoy en el payload" + JSON.stringify(payload));
-       
         if (!payload) {
-            console.log("no hay payload");
             throw new UnauthorizedException()
         }
-        //console.log(payload);
 
         return { userId: payload.name, username: payload.name, email: payload.email, role: payload.role }
     }

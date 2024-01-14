@@ -46,7 +46,7 @@ export class UsersService {
 
 
 
-    //funciones para administradores
+    //funciones for administradores
 
     async findAllUsersAdmin() {
         return this.userModel.find().lean();

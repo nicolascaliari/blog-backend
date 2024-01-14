@@ -19,27 +19,18 @@ export class AuthService {
     private jwtService: JwtService,
     private userService: UsersService,
   ) { }
-
-  //ACA TRAEMOS AL USUARIO DE MONGO
   async validateUser(email: string, password: string) {
     try {
       const user = await this.userService.findByEmail(email);
 
-      console.log("user" + user)
-
       if (!user) {
-        throw new UnauthorizedException('usuario no encontrado');
+        throw new UnauthorizedException('User not found');
       }
 
-      const checkPassword = await compare(password.trim(), user.password.trim());
-
-
-      console.log("pass" + password)
-      console.log("userpass" + user.password)
-      console.log("checkpass" + checkPassword)
+      const checkPassword = await compare(password.trim(), user.password.trim())
 
       if (!checkPassword) {
-        throw new UnauthorizedException('contraseña incorrecta');
+        throw new UnauthorizedException('Incorrect password');
       }
 
       return user;
@@ -53,28 +44,15 @@ export class AuthService {
 
   async login(user: LoginAuthDto) {
     const { email, password } = user;
-
-    console.log(user, email, password)
-
-
     const findUser = await this.userService.findByEmail(email);
 
-    console.log(findUser)
-
     if (!findUser) {
-      throw new UnauthorizedException('usuario no encontrado');
+      throw new UnauthorizedException('User not found');
     }
 
-    console.log(findUser)
-    console.log(password)
-    console.log(findUser.password)
-
-
     const checkPassword = await compare(password, findUser.password);
-
-    console.log(checkPassword)
     if (!checkPassword) {
-      throw new UnauthorizedException('contraseña incorrecta');
+      throw new UnauthorizedException('Incorrect password');
     }
 
     const payload = { id: findUser._id, name: findUser.name, email: findUser.email, role: findUser.role }
@@ -93,14 +71,14 @@ export class AuthService {
 
   async register(user: RegisterAuthDto) {
     const { password } = user;
-  
+
     const plainTohash = await hash(password, 10);
 
     console.log(plainTohash)
-  
+
     // Crea una nueva instancia de user con la contraseña hasheada
     const newUser = { ...user, password: plainTohash };
-  
+
     return this.userService.create(newUser);
   }
 }

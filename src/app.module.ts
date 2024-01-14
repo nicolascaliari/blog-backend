@@ -25,4 +25,4 @@ import { PostsModule } from './posts/posts.module';
   controllers: [AuthController],
   providers: [],
 })
-export class AppModule {}
+export class AppModule { }
